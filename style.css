@@ -1,0 +1,123 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* .container {
+  display: flex;
+  flex-direction: column;
+} */
+
+body {
+  background-color: #f5f5f5;
+}
+.main-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr 1fr 1fr auto;
+  grid-template-areas:
+    "header"
+    "income"
+    "expense"
+    "budget"
+    ".";
+  margin: 1rem auto;
+  padding: 1rem;
+  max-width: 700px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px 2px #0000001f;
+  gap: 1.5rem;
+}
+
+.hero {
+  grid-area: header;
+  text-align: center;
+  background: linear-gradient(135deg, #0edeb8 0%, #764ba2 100%);
+  color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.budget__header {
+  color: #333;
+}
+
+.income {
+  grid-area: income;
+  display: flex;
+  flex-direction: column;
+  background-color: #e8f5e8;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: -5px 0px 1px #4caf50ad;
+}
+
+.income__section {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn--add,
+.btn--subtract {
+  grid-column: -1;
+}
+
+.expense {
+  grid-area: expense;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffeaea;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: -5px 0px 1px #f44336;
+}
+
+.expense__section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.final {
+  grid-area: budget;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9ff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border-left: 4px solid #667eea;
+}
+
+.btn--add {
+  color: green;
+}
+
+.btn--subtract {
+  color: red;
+}
+
+.budget__reset {
+  background-color: #ff6b6b;
+  color: white;
+  margin-top: 1rem;
+  align-self: flex-start;
+  max-width: 150px;
+  width: 20%;
+}
+
+.error {
+  color: red;
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <main class="container">
+     
+
+        <form action="#" class="budget__forms">
+ <section class="main-form">
+        <header class="hero">
+          <h1 class="hero__header">Budget Calculator</h1>
+          <p class="hero__para">Take Control of Your Finances</p>
+        </header>
+
+
+
+          
+          <section class="income">
+            <h2 class="budget__header">Total Income</h2>
+            <div class="income__section">
+              <label for="source--0" class="income__label">Description</label>
+              <input
+                type="text"
+                class="income__source"
+                placeholder="Freelance, Side Gig, Salary"
+                id="source--0"
+                name="source--0"
+              />
+              <label for="income--0" class="income__label">Amount</label>
+              <input
+                type="number"
+                class="income__amount"
+                placeholder="$0.00"
+                id="income--0"
+                name="income--0"
+              />
+              <button type="button" class="btn btn--add" data-add>
+                +(add)
+              </button>
+            </div>
+
+            <div class="income__section">
+              <label for="source--1" class="income__label">
+                2nd Description</label
+              >
+              <input
+                type="text"
+                class="income__source"
+                placeholder="Freelance, Side Gig, Salary"
+                id="source--1"
+                name="source--1"
+              />
+              <label for="income--1" class="income__label">2nd Amount</label>
+              <input
+                type="number"
+                class="income__amount"
+                placeholder="$0.00"
+                id="income--1"
+                name="income--1"
+              />
+              <button type="button" class="btn btn--add" data-add>
+                +(add)
+              </button>
+              <button type="button" class="btn btn--subtract" data-subtract>
+                -(minus)
+              </button>
+            </div>
+            <!-- End of Income, need to adjust styling for when you add...-->
+          </section>
+
+          <!-- begin Exenpses -->
+          <section class="expense">
+            <h2 class="budget__header">Total Expenses</h2>
+            <div class="expense__section">
+              <label for="exp-source--0" class="expense__label"
+                >Description</label
+              >
+              <input
+                type="text"
+                class="expense__source"
+                placeholder="Freelance, Side Gig, Salary"
+                id="exp-source--0"
+                name="exp-source--0"
+              />
+              <p class="error">Please Input Correct Expense</p>
+              <label for="expense--0" class="expense__label">Amount</label>
+              <input
+                type="number"
+                class="expense__amount"
+                placeholder="$0.00"
+                id="expense--0"
+                name="expense--0"
+              />
+              <p class="error">Please Input Correct Expense</p>
+
+              <button type="button" class="btn btn--add" data-add>
+                +(add)
+              </button>
+            </div>
+
+            <div class="expense__section">
+              <label for="exp-source--1" class="expense__label"
+                >2nd Description</label
+              >
+              <input
+                type="text"
+                class="expense__source"
+                placeholder="Freelance, Side Gig, Salary"
+                id="exp-source--1"
+                name="exp-source--1"
+              />
+              <p class="error">Please Input Correct Expense</p>
+
+              <label for="expense--1" class="expense__label">2nd Amount</label>
+              <input
+                type="number"
+                class="expense__amount"
+                placeholder="$0.00"
+                id="expense--1"
+                name="expense--1"
+              />
+              <p class="error">Please Input Correct Expense</p>
+
+              <button type="button" class="btn btn--add" data-add>
+                +(add)
+              </button>
+              <button type="button" class="btn btn--subtract" data-subtract>
+                -(minus)
+              </button>
+            </div>
+          <button class="btn form__button" type="submit">Calculate Budget</button>
+
+          </section>
+
+        </form>
+
+        <section class="final">
+          <h2 class="budget__header">Final Budget</h2>
+          <div class="summary">
+            <h3 class="summary__h3">Your Budget at a Glance</h3>
+            <p class="summary__para">Your Biweekly Income is:${Biweekly}</p>
+            <p class="summary__para">You are:${Differnce} under budget!</p>
+            <p class="summary__para">
+              Congrats, here are some resources: ${budget}
+            </p>
+            <p class="summary__para">Largest Transaction is: ${Largest}</p>
+            <p class="summary__para">On average, you spend ${diff} per day!</p>
+
+            <p class="summary__para">You are:${Differnce} over budget!</p>
+            <p class="summary__para">
+              Sorry, here are some resources: ${budget}
+            </p>
+            <p class="summary__para">On average, you spend ${diff} per day!</p>
+            <p class="summary__para">Largest Transaction is: ${Largest}</p>
+            <button type="reset" class="btn budget__reset" data-reset>
+              Reset
+            </button>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
