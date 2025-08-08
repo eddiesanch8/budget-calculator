@@ -1,2 +1,293 @@
 "use strict";
-console.log(`connected!`);
+
+// ----------------------- DOM Error Message -----------------------------\\
+const incomeSection = document.querySelector(".income");
+const expenseSection = document.querySelector(".expense");
+
+// -----------------------  Error Message Function -----------------------------\\
+
+const displayError = function () {
+  incomeSection.classList.toggle("error-message");
+};
+// ----------------------- DOM Error Message Event Handler-----------------------------\\
+
+incomeSection.addEventListener("click", displayError);
+
+// ----------------------- Adding/Removing Inputs to Income Section DOM -----------------------------\\
+
+const addNewIncomeBtn = document.querySelectorAll("[data-add-income]");
+
+// ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
+
+const appendIncomeInput = function () {
+  const currentSections = document.querySelectorAll(".income__section");
+
+  if (currentSections.length >= 8) return;
+
+  let addNum = currentSections.length + 1;
+  let newField = `
+              <label for="source--${addNum}" class="income__label">
+                Description</label
+              >
+              
+              <input
+                data-income-source
+                type="text"
+                class="income__source"
+                placeholder="Freelance, Side Gig, Salary"
+                id="source--${addNum}"
+                name="source--${addNum}"
+              />
+            <p class="error"></p>
+
+              <label for="income--${addNum}" class="income__label">Amount</label>
+              <input
+                data-income-amount
+                type="number"
+                step="0.01"
+                pattern='^\d*(\.\d{0,2})?$'
+                class="income__amount"
+                placeholder="$0.00"
+                id="income--${addNum}"
+                name="income--${addNum}"
+              />
+            <p class="error"></p>
+
+              <button type="button" class="btn btn--add" data-add-income>
+                +
+              </button>
+              <button type="button" class="btn btn--subtract" data-subtract-income>
+                -
+              </button>`;
+  const newDiv = document.createElement("div");
+  newDiv.classList.add("income__section");
+  newDiv.innerHTML = newField;
+  incomeSection.append(newDiv);
+  newDiv
+    .querySelector("[data-add-income]")
+    .addEventListener("click", appendIncomeInput);
+  newDiv
+    .querySelector("[data-subtract-income]")
+    .addEventListener("click", removeIncomeInput);
+};
+
+const removeIncomeInput = function (e) {
+  const currentSections = document.querySelectorAll(".income__section");
+  if (currentSections.length === 1) return;
+  const section = e.target.closest(".income__section");
+  if (section) {
+    section.remove();
+  }
+};
+
+// ------------------------------- Add Income Inputs Handler ------------------------------\\
+
+addNewIncomeBtn.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    appendIncomeInput();
+  });
+});
+
+// ----------------------- Adding/Removing Inputs to Income Section DOM -----------------------------\\
+const addNewExpenseBtn = document.querySelectorAll("[data-add-expense]");
+
+// expense and income section declared at top of Doc
+
+// ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
+
+const appendExpenseInput = function () {
+  const currentSections = document.querySelectorAll(".expense__section");
+
+  if (currentSections.length >= 8) return;
+
+  let addNum = currentSections.length + 1;
+  let newField = `
+    <label for="exp-source--${addNum}" class="expense__label">Description</label>
+    <input
+      data-expense-source
+      type="text"
+      class="expense__source"
+      placeholder="Groceries, Utilities, Rent"
+      id="exp-source--${addNum}"
+      name="exp-source--${addNum}"
+    />
+    <p class="error"></p>
+
+    <label for="expense--${addNum}" class="expense__label">Amount</label>
+    <input
+      data-expense-amount
+      type="number"
+      step="0.01"
+      pattern='^\d*(\.\d{0,2})?$'
+      class="expense__amount"
+      placeholder="$0.00"
+      id="expense--${addNum}"
+      name="expense--${addNum}"
+    />
+    <p class="error"></p>
+
+    <button type="button" class="btn btn--add" data-add-expense>
+      +
+    </button>
+    <button type="button" class="btn btn--subtract" data-subtract-expense>
+      -
+    </button>
+  `;
+  const newDiv = document.createElement("div");
+  newDiv.classList.add("expense__section");
+  newDiv.innerHTML = newField;
+  expenseSection.append(newDiv);
+
+  newDiv
+    .querySelector("[data-add-expense]")
+    .addEventListener("click", appendExpenseInput);
+  newDiv
+    .querySelector("[data-subtract-expense]")
+    .addEventListener("click", removeExpenseInput);
+};
+
+const removeExpenseInput = function (e) {
+  const currentSections = document.querySelectorAll(".expense__section");
+  if (currentSections.length === 1) return;
+  const section = e.target.closest(".expense__section");
+  if (section) {
+    section.remove();
+  }
+};
+
+// ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
+
+addNewExpenseBtn.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    appendExpenseInput();
+  });
+});
+
+// ------------------------------------------- Calculate Income DOM -----------------------------------------------\\
+
+// Looking for our Form and its Submission
+const formSubmit = document.querySelector("#form");
+
+// Finding the Summary Section so we can append our message
+const summarySection = document.querySelector("[data-summary]");
+
+// ------------------------------------------- Calculate Income Function -----------------------------------------------\\
+
+// storing Income in JS object
+const getIncomeInputValues = function () {
+  const incomeName = document.querySelectorAll("[data-income-source]");
+  const incomeAmount = document.querySelectorAll("[data-income-amount]");
+
+  // I have to initialize an empty object to then be able to add Key/Value Pairs in said object
+  const incomeDeclared = {};
+  const incomeSourceTypes = {};
+
+  // accessing the for Dollar Amount of Income
+  incomeAmount.forEach((input) => {
+    incomeDeclared[input.name] = parseFloat(input.value);
+    console.log(incomeDeclared);
+  });
+
+  // Accessing the income source input
+  incomeName.forEach((input) => {
+    incomeSourceTypes[input.name] = input.value.trim();
+    console.log(incomeSourceTypes);
+  });
+  // return an object that can organize all our income amounts and sources
+  return { sources: incomeSourceTypes, amounts: incomeDeclared };
+};
+
+// ------------------------------------------- Calculate Expense Function -----------------------------------------------\\
+
+const getExpenseInputValues = function () {
+  const expenseName = document.querySelectorAll("[data-expense-source]");
+  const expenseAmount = document.querySelectorAll("[data-expense-amount]");
+
+  // Same logic as income input
+  const expenseDeclared = {};
+  const expenseSourceTypes = {};
+
+  expenseAmount.forEach((input) => {
+    expenseDeclared[input.name] = parseFloat(input.value) || 0;
+  });
+
+  expenseName.forEach((input) => {
+    expenseSourceTypes[input.name] = input.value.trim();
+  });
+
+  return { sources: expenseSourceTypes, amounts: expenseDeclared };
+};
+
+// ------------------------------------------- Calculate Budget DOM -----------------------------------------------\\
+
+const calcTotal = function (objectParam) {
+  // reduce is an array method, and since Object.values returns an array,
+  // I'm able to cleanly calculate through the object.
+  // Reduce takes a callback function as a parameter, then an initial starting value
+  return Object.values(objectParam).reduce((total, amount) => {
+    return total + amount;
+  }, 0);
+};
+
+function calculate() {
+  // grabs the objects created in our previous functions
+  const totalIncomeObj = getIncomeInputValues();
+  const totalExpenseObj = getExpenseInputValues();
+
+  // calls back to our function that grabs a total amount for both income and expense objects.
+  // .amounts refers to the object we previously made in both getExpenseValues and getIncomeValues
+  let totalIncome = calcTotal(totalIncomeObj.amounts);
+  let totalExpense = calcTotal(totalExpenseObj.amounts);
+
+  let biWeekly = totalIncome / 2;
+  let finalTotal = totalIncome - totalExpense;
+  let dailyExpense = totalExpense / 30;
+
+  return displayResults(
+    finalTotal.toFixed(2),
+    biWeekly.toFixed(2),
+    dailyExpense.toFixed(2)
+  );
+}
+
+function displayResults(finalAmount, biWeekly, dailyExpense) {
+  const newDiv = document.createElement("div");
+  newDiv.classList.add("summary");
+  const budgetURL =
+    "https://www.ramseysolutions.com/dave-ramsey-7-baby-steps?gad_source=1&gad_campaignid=197939186&gbraid=0AAAAAD_Z1jz6vxT9Z6xILcDXGWnxPsucx&gclid=CjwKCAjwwNbEBhBpEiwAFYLtGC59FrFrAhb9_czg74mc9UBNhoo_7SJtVd9AG5CidxcZiogSrBJo9RoC_IoQAvD_BwE";
+  const investURL =
+    "https://www.nerdwallet.com/m/investing/compare-online-brokers-for-ira-nwam?utm_source=goog&utm_medium=cpc&utm_campaign=in_mktg_paid_2025_ira&utm_term=ira%20account&utm_content=ta&gad_source=1&gad_campaignid=22393064308&gbraid=0AAAAADfKLw0RjLRS3QSFX2kRywRK4mA1J&gclid=CjwKCAjwwNbEBhBpEiwAFYLtGC6Wzuo0qhMQfQl8ctBL5koz-SAckxvTLXW7WYBqGbz3-2veSg5wNhoC2tgQAvD_BwE";
+
+  if (finalAmount < 0) {
+    newDiv.innerHTML = `<h3 class="summary__h3">Your Budget at a Glance</h3>
+            <p class="summary__para">Your Bi-weekly Income is:${biWeekly}</p>
+            <p class="summary__para">You are: $${finalAmount} over budget!</p>
+            <p class="summary__para">
+              Sorry, here are some resources: <a class="summary__anchor" href="${budgetURL}"> Getting out of Debt, Buidling Wealth </a>
+            </p>
+            <p class="summary__para">On average, you spend ${dailyExpense} per day!</p>
+            <button type="reset" class="btn budget__reset" data-reset>
+              Reset
+            </button>
+`;
+  } else {
+    newDiv.innerHTML = `<h3 class="summary__h3">Your Budget at a Glance</h3>
+            <p class="summary__para">Your Bi-weekly Income is:${biWeekly}</p>
+            <p class="summary__para">You are: $${finalAmount} under budget!</p>
+            <p class="summary__para">
+              Congrats, here are some resources: <a class="summary__anchor" href="${investURL}"> Invest and Build Wealth</a>
+            </p>
+            <p class="summary__para">On average, you spend ${dailyExpense} per day!</p>
+            <button type="reset" class="btn budget__reset" data-reset>
+              Reset
+            </button>
+`;
+  }
+
+  summarySection.append(newDiv);
+}
+
+formSubmit.addEventListener("submit", (e) => {
+  e.preventDefault();
+  calculate();
+});
