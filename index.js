@@ -1,17 +1,116 @@
 "use strict";
 
-// ----------------------- DOM Error Message -----------------------------\\
+// ----------------------- DOM Data Message -----------------------------\\
 const incomeSection = document.querySelector(".income");
 const expenseSection = document.querySelector(".expense");
 
-// -----------------------  Error Message Function -----------------------------\\
+// -----------------------  Data Validation Function -----------------------------\\
 
-const displayError = function () {
-  incomeSection.classList.toggle("error-message");
+// Validate description fields
+const validateIncome = function () {
+  let isValid = true;
+  const incomeFields = document.querySelectorAll("[data-income-source]");
+  const incomeFieldErrors = document.querySelectorAll(
+    "[data-error-income-source]"
+  );
+  const incomeAmounts = document.querySelectorAll("[data-income-amount]");
+  const incomeAmountErrors = document.querySelectorAll(
+    "[data-error-income-amount]"
+  );
+
+  // Loop through each income field
+  incomeFields.forEach((field, index) => {
+    // Get corresponding error element
+    const errorElement = incomeFieldErrors[index];
+
+    if (field.value.trim() === "") {
+      errorElement.innerText = "Income source is required";
+      field.classList.add("error-message");
+      isValid = false;
+    } else {
+      errorElement.innerText = "";
+      field.classList.remove("error-message");
+    }
+  });
+
+  incomeAmounts.forEach((amount, index) => {
+    const errorElement = incomeAmountErrors[index];
+
+    if (amount.value === 0) {
+      errorElement.innerText = "Please enter a valid number";
+      amount.classList.add("error-message");
+      isValid = false;
+    } else {
+      errorElement.innerText = "";
+      amount.classList.remove("error-message");
+    }
+
+    if (amount.value < 0) {
+      errorElement.innerText = "Please enter a positive number";
+      amount.classList.add("error-message");
+      isValid = false;
+    } else {
+      errorElement.innerText = "";
+      amount.classList.remove("error-message");
+    }
+
+    if (amount.value === "") {
+      errorElement.innerText = "Please enter a number";
+      amount.classList.add("error-message");
+      isValid = false;
+    } else {
+      errorElement.innerText = "";
+      amount.classList.remove("error-message");
+    }
+  });
+
+  return isValid;
 };
-// ----------------------- DOM Error Message Event Handler-----------------------------\\
 
-incomeSection.addEventListener("click", displayError);
+const validateExpenses = function () {
+  const expenseFields = document.querySelectorAll("[data-expense-source]");
+  const expenseFieldErrors = document.querySelectorAll(
+    "[data-error-expense-source]"
+  );
+  const expenseAmounts = document.querySelectorAll("[data-expense-amount]");
+  const expenseAmountErrors = document.querySelectorAll(
+    "[data-error-expense-amount]"
+  );
+
+  let isValid = true;
+  // Similar validation for expenses
+  expenseFields.forEach((field, index) => {
+    const errorElement = expenseFieldErrors[index];
+
+    if (field.value.trim() === "") {
+      errorElement.innerText = "Expense source is required";
+      field.classList.add("error-message");
+      isValid = false;
+    } else {
+      errorElement.innerText = "";
+      field.classList.remove("error-message");
+    }
+  });
+
+  expenseAmounts.forEach((amount, index) => {
+    const errorElement = expenseAmountErrors[index];
+
+    if (amount.value === "") {
+      errorElement.innerText = "Please enter a valid number";
+      amount.classList.add("error-message");
+      isValid = false;
+    } else if (amount.value < 0) {
+      errorElement.innerText = "Please enter a positive number";
+      amount.classList.add("error-message");
+      isValid = false;
+    } else {
+      errorElement.innerText = "";
+      amount.classList.remove("error-message");
+    }
+  });
+
+  return isValid;
+};
 
 // ----------------------- Adding/Removing Inputs to Income Section DOM -----------------------------\\
 
@@ -38,7 +137,7 @@ const appendIncomeInput = function () {
                 id="source--${addNum}"
                 name="source--${addNum}"
               />
-            <p class="error"></p>
+            <p class="error" data-error-income-source></p>
 
               <label for="income--${addNum}" class="income__label">Amount</label>
               <input
@@ -51,7 +150,7 @@ const appendIncomeInput = function () {
                 id="income--${addNum}"
                 name="income--${addNum}"
               />
-            <p class="error"></p>
+            <p class="error" data-error-income-amount ></p>
 
               <button type="button" class="btn btn--add" data-add-income>
                 +
@@ -111,7 +210,7 @@ const appendExpenseInput = function () {
       id="exp-source--${addNum}"
       name="exp-source--${addNum}"
     />
-    <p class="error"></p>
+    <p class="error" data-error-expense-source></p>
 
     <label for="expense--${addNum}" class="expense__label">Amount</label>
     <input
@@ -124,7 +223,7 @@ const appendExpenseInput = function () {
       id="expense--${addNum}"
       name="expense--${addNum}"
     />
-    <p class="error"></p>
+    <p class="error" data-error-expense-amount></p>
 
     <button type="button" class="btn btn--add" data-add-expense>
       +
@@ -257,27 +356,28 @@ function displayResults(finalAmount, biWeekly, dailyExpense) {
     "https://www.ramseysolutions.com/dave-ramsey-7-baby-steps?gad_source=1&gad_campaignid=197939186&gbraid=0AAAAAD_Z1jz6vxT9Z6xILcDXGWnxPsucx&gclid=CjwKCAjwwNbEBhBpEiwAFYLtGC59FrFrAhb9_czg74mc9UBNhoo_7SJtVd9AG5CidxcZiogSrBJo9RoC_IoQAvD_BwE";
   const investURL =
     "https://www.nerdwallet.com/m/investing/compare-online-brokers-for-ira-nwam?utm_source=goog&utm_medium=cpc&utm_campaign=in_mktg_paid_2025_ira&utm_term=ira%20account&utm_content=ta&gad_source=1&gad_campaignid=22393064308&gbraid=0AAAAADfKLw0RjLRS3QSFX2kRywRK4mA1J&gclid=CjwKCAjwwNbEBhBpEiwAFYLtGC6Wzuo0qhMQfQl8ctBL5koz-SAckxvTLXW7WYBqGbz3-2veSg5wNhoC2tgQAvD_BwE";
-
-  if (finalAmount < 0) {
+  const sideURL =
+    "https://www.shopify.com/blog/side-hustle?term=&adid=732992717445&campaignid=19683492884&utm_medium=cpc&utm_source=google&gad_source=1&gad_campaignid=19683492884&gbraid=0AAAAADp4t0q2MPOdk2QCv6xj-4e437DKd&gclid=CjwKCAjw49vEBhAVEiwADnMbbDdTcPj330yBASUjBwa4zCq0pcln7sWbWMAez1MXGu-NsJefNei1dxoCL94QAvD_BwE&cmadid=516586854;cmadvertiserid=10730501;cmcampaignid=26990768;cmplacementid=324494812;cmcreativeid=163722649;cmsiteid=5500011";
+  if (finalAmount <= 0) {
     newDiv.innerHTML = `<h3 class="summary__h3">Your Budget at a Glance</h3>
             <p class="summary__para">Your Bi-weekly Income is:${biWeekly}</p>
             <p class="summary__para">You are: $${finalAmount} over budget!</p>
             <p class="summary__para">
               Sorry, here are some resources: <a class="summary__anchor" href="${budgetURL}"> Getting out of Debt, Buidling Wealth </a>
             </p>
-            <p class="summary__para">On average, you spend ${dailyExpense} per day!</p>
+            <p class="summary__para">On average, this month you spent $${dailyExpense} per day!</p>
             <button type="reset" class="btn budget__reset" data-reset>
               Reset
             </button>
 `;
   } else {
     newDiv.innerHTML = `<h3 class="summary__h3">Your Budget at a Glance</h3>
-            <p class="summary__para">Your Bi-weekly Income is:${biWeekly}</p>
+            <p class="summary__para">Your Bi-weekly Income is: $${biWeekly}</p>
             <p class="summary__para">You are: $${finalAmount} under budget!</p>
             <p class="summary__para">
               Congrats, here are some resources: <a class="summary__anchor" href="${investURL}"> Invest and Build Wealth</a>
             </p>
-            <p class="summary__para">On average, you spend ${dailyExpense} per day!</p>
+            <p class="summary__para">On average, this month you spent $${dailyExpense} per day!</p>
             <button type="reset" class="btn budget__reset" data-reset>
               Reset
             </button>
@@ -287,7 +387,25 @@ function displayResults(finalAmount, biWeekly, dailyExpense) {
   summarySection.append(newDiv);
 }
 
+// Updated form submission handler
 formSubmit.addEventListener("submit", (e) => {
   e.preventDefault();
-  calculate();
+
+  // Clear any existing summary results
+  const existingSummary = summarySection.querySelector(".summary");
+  if (existingSummary) {
+    existingSummary.remove();
+  }
+
+  // Run validations and get results
+  const isIncomeValid = validateIncome();
+  const isExpenseValid = validateExpenses();
+
+  // Only calculate if both validations pass
+  if (isIncomeValid && isExpenseValid) {
+    calculate();
+  } else {
+    // Optional: Show a general error message
+    console.log("Please fix validation errors before calculating budget");
+  }
 });
