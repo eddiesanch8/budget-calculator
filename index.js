@@ -387,7 +387,6 @@ function displayResults(finalAmount, biWeekly, dailyExpense) {
   summarySection.append(newDiv);
 }
 
-// Updated form submission handler
 formSubmit.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -397,15 +396,11 @@ formSubmit.addEventListener("submit", (e) => {
     existingSummary.remove();
   }
 
-  // Run validations and get results
   const isIncomeValid = validateIncome();
   const isExpenseValid = validateExpenses();
 
   // Only calculate if both validations pass
   if (isIncomeValid && isExpenseValid) {
     calculate();
-  } else {
-    // Optional: Show a general error message
-    console.log("Please fix validation errors before calculating budget");
   }
 });
