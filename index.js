@@ -112,155 +112,290 @@ const validateExpenses = function () {
   return isValid;
 };
 
-// ----------------------- Adding/Removing Inputs to Income Section DOM -----------------------------\\
+// ------------------------------------------- Refactored OOP -----------------------------------------------\\
 
-const addNewIncomeBtn = document.querySelectorAll("[data-add-income]");
-
-// ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
-
-const appendIncomeInput = function () {
-  const currentSections = document.querySelectorAll(".income__section");
-
-  if (currentSections.length >= 8) return;
-
-  let addNum = currentSections.length + 1;
-  let newField = `
-              <label for="source--${addNum}" class="income__label">
-                Description</label
-              >
-              
-              <input
-                data-income-source
-                type="text"
-                class="income__source"
-                placeholder="Freelance, Side Gig, Salary"
-                id="source--${addNum}"
-                name="source--${addNum}"
-              />
-            <p class="error" data-error-income-source></p>
-
-              <label for="income--${addNum}" class="income__label">Amount</label>
-              <input
-                data-income-amount
-                type="number"
-                step="0.01"
-                pattern='^\d*(\.\d{0,2})?$'
-                class="income__amount"
-                placeholder="$0.00"
-                id="income--${addNum}"
-                name="income--${addNum}"
-              />
-            <p class="error" data-error-income-amount ></p>
-
-              <button type="button" class="btn btn--add" data-add-income>
-                +
-              </button>
-              <button type="button" class="btn btn--subtract" data-subtract-income>
-                -
-              </button>`;
-  const newDiv = document.createElement("div");
-  newDiv.classList.add("income__section");
-  newDiv.innerHTML = newField;
-  incomeSection.append(newDiv);
-  newDiv
-    .querySelector("[data-add-income]")
-    .addEventListener("click", appendIncomeInput);
-  newDiv
-    .querySelector("[data-subtract-income]")
-    .addEventListener("click", removeIncomeInput);
-};
-
-const removeIncomeInput = function (e) {
-  const currentSections = document.querySelectorAll(".income__section");
-  if (currentSections.length === 1) return;
-  const section = e.target.closest(".income__section");
-  if (section) {
-    section.remove();
+class SectionToggle {
+  constructor(sectionType) {
+    // keeps the variable we pass in
+    this.sectionType = sectionType;
+    // maximum amount of inputs
+    this.maxSections = 8;
+    // grabs either income or expense section
+    this.section = document.querySelector(`.${sectionType}`);
+    this.init();
   }
-};
 
-// ------------------------------- Add Income Inputs Handler ------------------------------\\
-
-addNewIncomeBtn.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    appendIncomeInput();
-  });
-});
-
-// ----------------------- Adding/Removing Inputs to Income Section DOM -----------------------------\\
-const addNewExpenseBtn = document.querySelectorAll("[data-add-expense]");
-
-// expense and income section declared at top of Doc
-
-// ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
-
-const appendExpenseInput = function () {
-  const currentSections = document.querySelectorAll(".expense__section");
-
-  if (currentSections.length >= 8) return;
-
-  let addNum = currentSections.length + 1;
-  let newField = `
-    <label for="exp-source--${addNum}" class="expense__label">Description</label>
-    <input
-      data-expense-source
-      type="text"
-      class="expense__source"
-      placeholder="Groceries, Utilities, Rent"
-      id="exp-source--${addNum}"
-      name="exp-source--${addNum}"
-    />
-    <p class="error" data-error-expense-source></p>
-
-    <label for="expense--${addNum}" class="expense__label">Amount</label>
-    <input
-      data-expense-amount
-      type="number"
-      step="0.01"
-      pattern='^\d*(\.\d{0,2})?$'
-      class="expense__amount"
-      placeholder="$0.00"
-      id="expense--${addNum}"
-      name="expense--${addNum}"
-    />
-    <p class="error" data-error-expense-amount></p>
-
-    <button type="button" class="btn btn--add" data-add-expense>
-      +
-    </button>
-    <button type="button" class="btn btn--subtract" data-subtract-expense>
-      -
-    </button>
-  `;
-  const newDiv = document.createElement("div");
-  newDiv.classList.add("expense__section");
-  newDiv.innerHTML = newField;
-  expenseSection.append(newDiv);
-
-  newDiv
-    .querySelector("[data-add-expense]")
-    .addEventListener("click", appendExpenseInput);
-  newDiv
-    .querySelector("[data-subtract-expense]")
-    .addEventListener("click", removeExpenseInput);
-};
-
-const removeExpenseInput = function (e) {
-  const currentSections = document.querySelectorAll(".expense__section");
-  if (currentSections.length === 1) return;
-  const section = e.target.closest(".expense__section");
-  if (section) {
-    section.remove();
+  init() {
+    // Handle add buttons
+    const addButtons = document.querySelectorAll(
+      `[data-add-${this.sectionType}]`
+    );
+    addButtons.forEach((btn) => {
+      btn.addEventListener("click", () => this.addSection());
+    });
   }
-};
 
-// ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
+  addSection() {
+    const currentSections = document.querySelectorAll(
+      `.${this.sectionType}__section`
+    );
+    // refrains user from adding more than 8 sections
+    if (currentSections.length >= this.maxSections) return;
 
-addNewExpenseBtn.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    appendExpenseInput();
-  });
-});
+    // creates number to be passed into function to change form id and name attribute in html
+    const addNum = currentSections.length + 1;
+
+    // uses template literals to dynamically add new sections
+    const newField = this.createSectionHTML(addNum);
+
+    const newDiv = document.createElement("div");
+    // ensures styling gets applied to new div
+
+    newDiv.classList.add(`${this.sectionType}__section`);
+
+    newDiv.innerHTML = newField;
+    this.section.append(newDiv);
+
+    // Attach event listeners to the new buttons
+    newDiv
+      .querySelector(`[data-add-${this.sectionType}]`)
+      .addEventListener("click", () => this.addSection());
+    newDiv
+      .querySelector(`[data-subtract-${this.sectionType}]`)
+      .addEventListener("click", (e) => this.removeSection(e));
+  }
+
+  removeSection(e) {
+    // now to remove sections, follow previous logic
+    const currentSections = document.querySelectorAll(
+      `.${this.sectionType}__section`
+    );
+    // won't run if there already is a section. HTML takes care of this anyways but better safe than sorry
+    if (currentSections.length === 1) return;
+
+    const section = e.target.closest(`.${this.sectionType}__section`);
+    if (section) {
+      section.remove();
+    }
+  }
+
+  createSectionHTML(num) {
+    // Inner html, for every new div, str literal helps with keeping the form intact, counts by 1 and changes name, ID, and for label
+    if (this.sectionType === "income") {
+      return `
+        <label for="source--${num}" class="income__label">Description</label>
+        <input
+          data-income-source
+          type="text"
+          class="income__source"
+          placeholder="Freelance, Side Gig, Salary"
+          id="source--${num}"
+          name="source--${num}"
+        />
+        <p class="error" data-error-income-source></p>
+
+        <label for="income--${num}" class="income__label">Amount</label>
+        <input
+          data-income-amount
+          type="number"
+          step="0.01"
+          pattern='^\d*(\.\d{0,2})?$'
+          class="income__amount"
+          placeholder="$0.00"
+          id="income--${num}"
+          name="income--${num}"
+        />
+        <p class="error" data-error-income-amount></p>
+
+        <button type="button" class="btn btn--add" data-add-income>+</button>
+        <button type="button" class="btn btn--subtract" data-subtract-income>-</button>
+      `;
+    } else if (this.sectionType === "expense") {
+      return `
+        <label for="exp-source--${num}" class="expense__label">Description</label>
+        <input
+          data-expense-source
+          type="text"
+          class="expense__source"
+          placeholder="Groceries, Utilities, Rent"
+          id="exp-source--${num}"
+          name="exp-source--${num}"
+        />
+        <p class="error" data-error-expense-source></p>
+
+        <label for="expense--${num}" class="expense__label">Amount</label>
+        <input
+          data-expense-amount
+          type="number"
+          step="0.01"
+          pattern='^\d*(\.\d{0,2})?$'
+          class="expense__amount"
+          placeholder="$0.00"
+          id="expense--${num}"
+          name="expense--${num}"
+        />
+        <p class="error" data-error-expense-amount></p>
+
+        <button type="button" class="btn btn--add" data-add-expense>+</button>
+        <button type="button" class="btn btn--subtract" data-subtract-expense>-</button>
+      `;
+    }
+  }
+}
+
+// creating instances for income and expense sections
+const incomeManager = new SectionToggle("income");
+const expenseManager = new SectionToggle("expense");
+
+// // ----------------------- Adding/Removing Inputs Old Code -----------------------------\\
+
+// const addNewIncomeBtn = document.querySelectorAll("[data-add-income]");
+
+// // ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
+
+// const appendIncomeInput = function () {
+//   const currentSections = document.querySelectorAll(".income__section");
+
+//   if (currentSections.length >= 8) return;
+
+//   let addNum = currentSections.length + 1;
+//   let newField = `
+//               <label for="source--${addNum}" class="income__label">
+//                 Description</label
+//               >
+
+//               <input
+//                 data-income-source
+//                 type="text"
+//                 class="income__source"
+//                 placeholder="Freelance, Side Gig, Salary"
+//                 id="source--${addNum}"
+//                 name="source--${addNum}"
+//               />
+//             <p class="error" data-error-income-source></p>
+
+//               <label for="income--${addNum}" class="income__label">Amount</label>
+//               <input
+//                 data-income-amount
+//                 type="number"
+//                 step="0.01"
+//                 pattern='^\d*(\.\d{0,2})?$'
+//                 class="income__amount"
+//                 placeholder="$0.00"
+//                 id="income--${addNum}"
+//                 name="income--${addNum}"
+//               />
+//             <p class="error" data-error-income-amount ></p>
+
+//               <button type="button" class="btn btn--add" data-add-income>
+//                 +
+//               </button>
+//               <button type="button" class="btn btn--subtract" data-subtract-income>
+//                 -
+//               </button>`;
+//   const newDiv = document.createElement("div");
+//   newDiv.classList.add("income__section");
+//   newDiv.innerHTML = newField;
+//   incomeSection.append(newDiv);
+//   newDiv
+//     .querySelector("[data-add-income]")
+//     .addEventListener("click", appendIncomeInput);
+//   newDiv
+//     .querySelector("[data-subtract-income]")
+//     .addEventListener("click", removeIncomeInput);
+// };
+
+// const removeIncomeInput = function (e) {
+//   const currentSections = document.querySelectorAll(".income__section");
+//   if (currentSections.length === 1) return;
+//   const section = e.target.closest(".income__section");
+//   if (section) {
+//     section.remove();
+//   }
+// };
+
+// // ------------------------------- Add Income Inputs Handler ------------------------------\\
+
+// addNewIncomeBtn.forEach((btn) => {
+//   btn.addEventListener("click", () => {
+//     appendIncomeInput();
+//   });
+// });
+
+// // ----------------------- Adding/Removing Inputs to Income Section DOM -----------------------------\\
+// const addNewExpenseBtn = document.querySelectorAll("[data-add-expense]");
+
+// // expense and income section declared at top of Doc
+
+// // ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
+
+// const appendExpenseInput = function () {
+//   const currentSections = document.querySelectorAll(".expense__section");
+
+//   if (currentSections.length >= 8) return;
+
+//   let addNum = currentSections.length + 1;
+//   let newField = `
+//     <label for="exp-source--${addNum}" class="expense__label">Description</label>
+//     <input
+//       data-expense-source
+//       type="text"
+//       class="expense__source"
+//       placeholder="Groceries, Utilities, Rent"
+//       id="exp-source--${addNum}"
+//       name="exp-source--${addNum}"
+//     />
+//     <p class="error" data-error-expense-source></p>
+
+//     <label for="expense--${addNum}" class="expense__label">Amount</label>
+//     <input
+//       data-expense-amount
+//       type="number"
+//       step="0.01"
+//       pattern='^\d*(\.\d{0,2})?$'
+//       class="expense__amount"
+//       placeholder="$0.00"
+//       id="expense--${addNum}"
+//       name="expense--${addNum}"
+//     />
+//     <p class="error" data-error-expense-amount></p>
+
+//     <button type="button" class="btn btn--add" data-add-expense>
+//       +
+//     </button>
+//     <button type="button" class="btn btn--subtract" data-subtract-expense>
+//       -
+//     </button>
+//   `;
+//   const newDiv = document.createElement("div");
+//   newDiv.classList.add("expense__section");
+//   newDiv.innerHTML = newField;
+//   expenseSection.append(newDiv);
+
+//   newDiv
+//     .querySelector("[data-add-expense]")
+//     .addEventListener("click", appendExpenseInput);
+//   newDiv
+//     .querySelector("[data-subtract-expense]")
+//     .addEventListener("click", removeExpenseInput);
+// };
+
+// const removeExpenseInput = function (e) {
+//   const currentSections = document.querySelectorAll(".expense__section");
+//   if (currentSections.length === 1) return;
+//   const section = e.target.closest(".expense__section");
+//   if (section) {
+//     section.remove();
+//   }
+// };
+
+// // ------------------------------- Add/Remove Inputs to Income Function ------------------------------\\
+
+// addNewExpenseBtn.forEach((btn) => {
+//   btn.addEventListener("click", () => {
+//     appendExpenseInput();
+//   });
+// });
 
 // ------------------------------------------- Calculate Income DOM -----------------------------------------------\\
 
